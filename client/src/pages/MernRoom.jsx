@@ -825,17 +825,27 @@ export default function MernRoom() {
                     >
                       View on GitHub
                     </motion.a>
-                    <motion.span
-                      className="btn btn-ghost"
+                    <motion.a
+                      href="http://pipelineiq-bucket.s3-website-us-east-1.amazonaws.com"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline"
                       style={{
                         fontSize: "0.9rem",
                         padding: "0.75rem 1.5rem",
-                        opacity: 0.6,
-                        cursor: "not-allowed",
+                        borderColor: "rgba(6,182,212,0.5)",
+                        color: "#22D3EE",
                       }}
+                      whileHover={{
+                        scale: 1.05,
+                        y: -3,
+                        borderColor: "rgba(6,182,212,1)",
+                        boxShadow: "0 10px 30px rgba(6,182,212,0.3)",
+                      }}
+                      whileTap={{ scale: 0.95 }}
                     >
-                      Live Demo (Soon)
-                    </motion.span>
+                      Live Demo
+                    </motion.a>
                   </div>
                 </div>
 
