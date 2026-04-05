@@ -123,16 +123,11 @@ LinkedIn: Vishal Attri
 
 MIT © Vishal Attri
 
-<<<<<<< HEAD
 Built with ❤️ using MERN Stack
-=======
-Built with ❤️ 
->>>>>>> 359b9f791d9c763d738aaf6b9331e4c2c7678321
 
-text
+Built with ❤️ 
 
 ---
-<<<<<<< HEAD
 
 ## 📋 How to Save
 
@@ -148,5 +143,4 @@ Or open in VS Code:
 bash
 code ~/desktop/portfolio/README.md
 
-=======
->>>>>>> 359b9f791d9c763d738aaf6b9331e4c2c7678321
+
