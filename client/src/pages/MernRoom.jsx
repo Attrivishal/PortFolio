@@ -1,10 +1,12 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useRef, useState } from "react";
 import SectionReveal from "../components/SectionReveal";
-import SkillBar from "../components/SkillBar";
+import SkillCard from "../components/SkillCard";
 import ContactForm from "../components/ContactForm";
 import Footer from "../components/Footer";
 import RoomEntry from "../components/RoomEntry";
+import Magnetic from "../components/Magnetic";
+import ParticleBackground from "../components/ParticleBackground";
 
 const PHOTO = "/images/vishal-photo.jpg";
 
@@ -113,6 +115,7 @@ export default function MernRoom() {
           overflow: "hidden",
         }}
       >
+        <ParticleBackground />
         {/* Animated Background Orbs */}
         <motion.div
           className="orb orb-cyan"
@@ -336,59 +339,63 @@ export default function MernRoom() {
                   variants={itemVariants}
                   style={{ display: "flex", flexWrap: "wrap", gap: "1.25rem" }}
                 >
-                  <motion.a
-                    href="/MERN-Resume.pdf"
-                    download
-                    className="btn btn-primary"
-                    whileHover={{ scale: 1.05, y: -3 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                    style={{
-                      position: "relative",
-                      overflow: "hidden",
-                    }}
-                  >
-                    <motion.span
+                  <Magnetic>
+                    <motion.a
+                      href="/MERN-Resume.pdf"
+                      download
+                      className="btn btn-primary"
+                      whileHover={{ scale: 1.05, y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 300 }}
                       style={{
-                        position: "absolute",
-                        inset: 0,
-                        background:
-                          "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
+                        position: "relative",
+                        overflow: "hidden",
                       }}
-                      animate={{
-                        x: ["-100%", "100%"],
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        repeatDelay: 3,
-                      }}
-                    />
-                    <span style={{ position: "relative", zIndex: 1 }}>
-                      ⬇ Download Resume
-                    </span>
-                  </motion.a>
+                    >
+                      <motion.span
+                        style={{
+                          position: "absolute",
+                          inset: 0,
+                          background:
+                            "linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)",
+                        }}
+                        animate={{
+                          x: ["-100%", "100%"],
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          repeatDelay: 3,
+                        }}
+                      />
+                      <span style={{ position: "relative", zIndex: 1 }}>
+                        ⬇ Download Resume
+                      </span>
+                    </motion.a>
+                  </Magnetic>
 
-                  <motion.a
-                    href="https://github.com/Attrivishal"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="btn btn-outline"
-                    style={{
-                      borderColor: "rgba(6,182,212,0.5)",
-                      color: "#22D3EE",
-                    }}
-                    whileHover={{
-                      scale: 1.05,
-                      y: -3,
-                      borderColor: "rgba(6,182,212,1)",
-                      boxShadow: "0 10px 30px rgba(6,182,212,0.3)",
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    View GitHub
-                  </motion.a>
+                  <Magnetic>
+                    <motion.a
+                      href="https://github.com/Attrivishal"
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="btn btn-outline"
+                      style={{
+                        borderColor: "rgba(6,182,212,0.5)",
+                        color: "#22D3EE",
+                      }}
+                      whileHover={{
+                        scale: 1.05,
+                        y: -3,
+                        borderColor: "rgba(6,182,212,1)",
+                        boxShadow: "0 10px 30px rgba(6,182,212,0.3)",
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      View GitHub
+                    </motion.a>
+                  </Magnetic>
                 </motion.div>
               </motion.div>
             </div>
@@ -693,6 +700,10 @@ export default function MernRoom() {
 
           <SectionReveal delay={0.15}>
             <motion.div
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.1}
+              whileDrag={{ scale: 1.02, zIndex: 10, cursor: "grabbing" }}
               style={{
                 position: "relative",
                 overflow: "hidden",
@@ -702,10 +713,11 @@ export default function MernRoom() {
                 border: "1px solid rgba(6,182,212,0.2)",
                 padding: "3rem",
                 boxShadow: "0 20px 50px rgba(0,0,0,0.3)",
+                cursor: "grab",
               }}
               whileHover={{
                 scale: 1.01,
-                boxShadow: "0 30px 60px rgba(6,182,212,0.3)",
+                boxShadow: "0 30px 60px rgba(6,182,212,0.2)",
               }}
               transition={{ type: "spring", stiffness: 200 }}
             >
@@ -987,37 +999,23 @@ export default function MernRoom() {
           </SectionReveal>
 
           <SectionReveal delay={0.15}>
-            <motion.div
-              className="glass-card"
-              style={{
-                padding: "3rem",
-                borderColor: "rgba(6,182,212,0.3)",
-                maxWidth: "1000px",
-                margin: "0 auto",
-              }}
-              whileHover={{
-                scale: 1.01,
-                boxShadow: "0 25px 50px rgba(6,182,212,0.2)",
-              }}
-              transition={{ type: "spring", stiffness: 200 }}
-            >
-              <div
-                style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fit, minmax(320px, 1fr))",
-                  gap: "2.5rem 4rem",
-                }}
-              >
-                {skills.map((skill, i) => (
-                  <SkillBar
-                    key={skill.name}
-                    name={skill.name}
-                    percent={skill.percent}
-                    delay={i * 80}
-                  />
-                ))}
-              </div>
-            </motion.div>
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))',
+              gap: '2rem',
+              maxWidth: '1200px',
+              margin: '0 auto',
+              padding: '1rem 0'
+            }}>
+              {skills.map((skill, i) => (
+                <SkillCard 
+                  key={skill.name} 
+                  {...skill} 
+                  delay={i * 0.1}
+                  color={i % 2 === 0 ? 'cyan' : 'purple'}
+                />
+              ))}
+            </div>
           </SectionReveal>
         </div>
       </section>
