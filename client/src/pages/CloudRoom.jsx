@@ -1,10 +1,13 @@
 import { motion, useScroll, useTransform } from 'framer-motion'
 import { useRef, useState } from 'react'
 import SectionReveal from '../components/SectionReveal'
-import SkillBar from '../components/SkillBar'
+import SkillCard from '../components/SkillCard'
 import ContactForm from '../components/ContactForm'
 import Footer from '../components/Footer'
 import RoomEntry from '../components/RoomEntry'
+import Magnetic from '../components/Magnetic'
+import ParticleBackground from '../components/ParticleBackground'
+import SystemConsole from '../components/SystemConsole'
 
 const PHOTO = "/images/vishal-photo.jpg"
 
@@ -91,6 +94,7 @@ export default function CloudRoom() {
           overflow: 'hidden' 
         }}
       >
+        <ParticleBackground />
         {/* Animated Background Orbs */}
         <motion.div 
           className="orb orb-purple" 
@@ -304,236 +308,84 @@ export default function CloudRoom() {
                   variants={itemVariants}
                   style={{ display: 'flex', flexWrap: 'wrap', gap: '1.25rem' }}
                 >
-                  <motion.a 
-                    href="/Cloud-Resume.pdf" 
-                    download 
-                    className="btn btn-secondary"
-                    whileHover={{ scale: 1.05, y: -3 }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                    style={{
-                      position: 'relative',
-                      overflow: 'hidden'
-                    }}
-                  >
-                    <motion.span
+                  <Magnetic>
+                    <motion.a 
+                      href="/Cloud-Resume.pdf" 
+                      download 
+                      className="btn btn-secondary"
+                      whileHover={{ scale: 1.05, y: -3 }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 300 }}
                       style={{
-                        position: 'absolute',
-                        inset: 0,
-                        background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                        position: 'relative',
+                        overflow: 'hidden'
                       }}
-                      animate={{
-                        x: ['-100%', '100%']
-                      }}
-                      transition={{
-                        duration: 2,
-                        repeat: Infinity,
-                        repeatDelay: 3
-                      }}
-                    />
-                    <span style={{ position: 'relative', zIndex: 1 }}>⬇ Download Resume</span>
-                  </motion.a>
+                    >
+                      <motion.span
+                        style={{
+                          position: 'absolute',
+                          inset: 0,
+                          background: 'linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent)',
+                        }}
+                        animate={{
+                          x: ['-100%', '100%']
+                        }}
+                        transition={{
+                          duration: 2,
+                          repeat: Infinity,
+                          repeatDelay: 3
+                        }}
+                      />
+                      <span style={{ position: 'relative', zIndex: 1 }}>⬇ Download Resume</span>
+                    </motion.a>
+                  </Magnetic>
 
-                  <motion.a 
-                    href="https://github.com/Attrivishal" 
-                    target="_blank" 
-                    rel="noopener noreferrer" 
-                    className="btn btn-outline" 
-                    style={{ borderColor: 'rgba(139,92,246,0.5)', color: '#A78BFA' }}
-                    whileHover={{ 
-                      scale: 1.05, 
-                      y: -3,
-                      borderColor: 'rgba(139,92,246,1)',
-                      boxShadow: '0 10px 30px rgba(139,92,246,0.3)'
-                    }}
-                    whileTap={{ scale: 0.95 }}
-                    transition={{ type: "spring", stiffness: 300 }}
-                  >
-                    View GitHub
-                  </motion.a>
+                  <Magnetic>
+                    <motion.a 
+                      href="https://github.com/Attrivishal" 
+                      target="_blank" 
+                      rel="noopener noreferrer" 
+                      className="btn btn-outline" 
+                      style={{ borderColor: 'rgba(139,92,246,0.5)', color: '#A78BFA' }}
+                      whileHover={{ 
+                        scale: 1.05, 
+                        y: -3,
+                        borderColor: 'rgba(139,92,246,1)',
+                        boxShadow: '0 10px 30px rgba(139,92,246,0.3)'
+                      }}
+                      whileTap={{ scale: 0.95 }}
+                      transition={{ type: "spring", stiffness: 300 }}
+                    >
+                      View GitHub
+                    </motion.a>
+                  </Magnetic>
                 </motion.div>
               </motion.div>
             </div>
 
-            {/* Right - Animated Photo */}
-            <motion.div 
-              className="cloud-hero-photo"
-              initial={{ opacity: 0, scale: 0.8, rotateY: 30 }}
-              animate={{ opacity: 1, scale: 1, rotateY: 0 }}
-              transition={{ 
-                duration: 1.2, 
-                delay: 0.4,
-                type: "spring",
-                stiffness: 100
-              }}
-              style={{ display: 'flex', justifyContent: 'center' }}
+            {/* Right: Console & Stats */}
+            <motion.div
+              initial={{ opacity: 0, x: 30 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}
             >
-              <motion.div 
-                style={{ position: 'relative', width: 350, height: 350 }}
-                whileHover={{ scale: 1.05 }}
-                transition={{ type: "spring", stiffness: 200 }}
-              >
-                {/* Animated Glow Ring */}
-                <motion.div 
-                  style={{ 
-                    position: 'absolute', 
-                    inset: -20, 
-                    borderRadius: '50% 50% 50% 50% / 50% 50% 50% 50%',
-                    background: 'linear-gradient(135deg, rgba(139,92,246,0.4), rgba(6,182,212,0.3))',
-                    filter: 'blur(25px)',
-                    zIndex: 0
-                  }}
-                  animate={{
-                    borderRadius: [
-                      '50% 50% 50% 50% / 50% 50% 50% 50%',
-                      '40% 60% 60% 40% / 60% 40% 40% 60%',
-                      '60% 40% 40% 60% / 40% 60% 60% 40%',
-                      '50% 50% 50% 50% / 50% 50% 50% 50%'
-                    ],
-                    rotate: [0, 360]
-                  }}
-                  transition={{
-                    borderRadius: {
-                      duration: 10,
-                      repeat: Infinity,
-                      ease: "easeInOut"
-                    },
-                    rotate: {
-                      duration: 25,
-                      repeat: Infinity,
-                      ease: "linear"
-                    }
-                  }}
-                />
-
-                {/* Photo Container */}
-                <motion.div 
-                  style={{ 
-                    width: '100%', 
-                    height: '100%', 
-                    borderRadius: '40% 60% 55% 45% / 45% 55% 60% 40%',
-                    overflow: 'hidden', 
-                    background: PHOTO ? 'transparent' : 'linear-gradient(135deg, #0F172A, #1e293b)',
-                    border: '3px solid rgba(139,92,246,0.4)', 
-                    display: 'flex', 
-                    alignItems: 'center', 
-                    justifyContent: 'center', 
-                    fontSize: '8rem', 
-                    position: 'relative', 
-                    zIndex: 1,
-                    boxShadow: '0 30px 60px rgba(0,0,0,0.5)'
-                  }}
-                  animate={{
-                    borderRadius: [
-                      '40% 60% 55% 45% / 45% 55% 60% 40%',
-                      '60% 40% 45% 55% / 55% 45% 40% 60%',
-                      '55% 45% 60% 40% / 40% 60% 55% 45%',
-                      '40% 60% 55% 45% / 45% 55% 60% 40%'
-                    ]
-                  }}
-                  transition={{
-                    duration: 10,
-                    repeat: Infinity,
-                    ease: "easeInOut"
-                  }}
-                >
-                  {PHOTO ? (
-                    <motion.img 
-                      src={PHOTO} 
-                      alt="Vishal Attri" 
-                      style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                      whileHover={{ scale: 1.1 }}
-                      transition={{ duration: 0.6 }}
-                    />
-                  ) : (
-                    <motion.span
-                      animate={{ 
-                        rotate: [0, 10, -10, 0],
-                        scale: [1, 1.1, 1]
-                      }}
-                      transition={{
-                        duration: 3,
-                        repeat: Infinity
-                      }}
-                    >
-                      ☁️
-                    </motion.span>
-                  )}
-                </motion.div>
-
-                {/* Floating Service Tags */}
-                <motion.div 
-                  animate={{ y: [0, -12, 0] }} 
-                  transition={{ duration: 3, repeat: Infinity }}
-                  style={{ 
-                    position: 'absolute', 
-                    top: -15, 
-                    right: -25, 
-                    background: 'rgba(139,92,246,0.15)', 
-                    backdropFilter: 'blur(15px)', 
-                    border: '1px solid rgba(139,92,246,0.4)', 
-                    borderRadius: 16, 
-                    padding: '0.75rem 1rem', 
-                    fontSize: '0.85rem', 
-                    color: '#A78BFA', 
-                    fontFamily: 'JetBrains Mono, monospace', 
-                    whiteSpace: 'nowrap',
-                    boxShadow: '0 8px 20px rgba(139,92,246,0.2)',
-                    fontWeight: 600
-                  }}
-                >
-                  🖥️ EC2
-                </motion.div>
-
-                <motion.div 
-                  animate={{ y: [0, 12, 0] }} 
-                  transition={{ duration: 3.5, repeat: Infinity, delay: 0.5 }}
-                  style={{ 
-                    position: 'absolute', 
-                    bottom: 25, 
-                    left: -35, 
-                    background: 'rgba(6,182,212,0.15)', 
-                    backdropFilter: 'blur(15px)', 
-                    border: '1px solid rgba(6,182,212,0.4)', 
-                    borderRadius: 16, 
-                    padding: '0.75rem 1rem', 
-                    fontSize: '0.85rem', 
-                    color: '#22D3EE', 
-                    fontFamily: 'JetBrains Mono, monospace', 
-                    whiteSpace: 'nowrap',
-                    boxShadow: '0 8px 20px rgba(6,182,212,0.2)',
-                    fontWeight: 600
-                  }}
-                >
-                  🗄️ S3
-                </motion.div>
-
-                <motion.div 
-                  animate={{ 
-                    y: [0, -10, 0],
-                    x: [0, 5, 0]
-                  }} 
-                  transition={{ duration: 4, repeat: Infinity, delay: 1 }}
-                  style={{ 
-                    position: 'absolute', 
-                    top: '50%', 
-                    right: -40, 
-                    background: 'rgba(244,114,182,0.15)', 
-                    backdropFilter: 'blur(15px)', 
-                    border: '1px solid rgba(244,114,182,0.4)', 
-                    borderRadius: 16, 
-                    padding: '0.75rem 1rem', 
-                    fontSize: '0.85rem', 
-                    color: '#F472B6', 
-                    fontFamily: 'JetBrains Mono, monospace', 
-                    whiteSpace: 'nowrap',
-                    boxShadow: '0 8px 20px rgba(244,114,182,0.2)',
-                    fontWeight: 600
-                  }}
-                >
-                  λ Lambda
-                </motion.div>
-              </motion.div>
+              <SystemConsole />
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+                {[
+                  { label: 'Uptime', value: '99.99%', icon: '📈' },
+                  { label: 'Region', value: 'Global', icon: '🌍' },
+                  { label: 'Latency', value: '24ms', icon: '⚡' },
+                  { label: 'Security', value: 'Active', icon: '🛡️' }
+                ].map(s => (
+                  <div key={s.label} className="glass-card noise-filter" style={{ padding: '1.25rem', textAlign: 'center', border: '1px solid rgba(139, 92, 246, 0.1)' }}>
+                    <div style={{ fontSize: '1.2rem', marginBottom: '0.25rem' }}>{s.icon}</div>
+                    <div style={{ fontSize: '0.65rem', color: '#64748B', textTransform: 'uppercase', marginBottom: '0.25rem', letterSpacing: '0.05em' }}>{s.label}</div>
+                    <div style={{ fontSize: '1.1rem', fontWeight: 700, color: '#A78BFA' }}>{s.value}</div>
+                  </div>
+                ))}
+              </div>
             </motion.div>
           </div>
         </motion.div>
@@ -657,6 +509,10 @@ export default function CloudRoom() {
 
           <SectionReveal delay={0.15}>
             <motion.div 
+              drag
+              dragConstraints={{ left: 0, right: 0, top: 0, bottom: 0 }}
+              dragElastic={0.1}
+              whileDrag={{ scale: 1.02, zIndex: 10, cursor: 'grabbing' }}
               style={{ 
                 position: 'relative', 
                 overflow: 'hidden', 
@@ -665,11 +521,12 @@ export default function CloudRoom() {
                 backdropFilter: 'blur(20px)', 
                 border: '1px solid rgba(139,92,246,0.2)', 
                 padding: '3rem',
-                boxShadow: '0 20px 50px rgba(0,0,0,0.3)'
+                boxShadow: '0 20px 50px rgba(0,0,0,0.3)',
+                cursor: 'grab'
               }}
               whileHover={{ 
                 scale: 1.01,
-                boxShadow: '0 30px 60px rgba(139,92,246,0.3)'
+                boxShadow: '0 30px 60px rgba(139,92,246,0.2)'
               }}
               transition={{ type: "spring", stiffness: 200 }}
             >
@@ -899,36 +756,23 @@ export default function CloudRoom() {
           </SectionReveal>
 
           <SectionReveal delay={0.15}>
-            <motion.div 
-              className="glass-card" 
-              style={{ 
-                padding: '3rem', 
-                borderColor: 'rgba(139,92,246,0.3)',
-                maxWidth: '1000px',
-                margin: '0 auto'
-              }}
-              whileHover={{ 
-                scale: 1.01,
-                boxShadow: '0 25px 50px rgba(139,92,246,0.2)'
-              }}
-              transition={{ type: "spring", stiffness: 200 }}
-            >
-              <div style={{ 
-                display: 'grid', 
-                gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', 
-                gap: '2.5rem 4rem' 
-              }}>
-                {skills.map((skill, i) => (
-                  <SkillBar 
-                    key={skill.name} 
-                    name={skill.name} 
-                    percent={skill.percent} 
-                    color="purple" 
-                    delay={i * 80} 
-                  />
-                ))}
-              </div>
-            </motion.div>
+            <div style={{ 
+              display: 'grid', 
+              gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', 
+              gap: '2rem',
+              maxWidth: '1200px',
+              margin: '0 auto',
+              padding: '1rem 0'
+            }}>
+              {skills.map((skill, i) => (
+                <SkillCard 
+                  key={skill.name} 
+                  {...skill} 
+                  delay={i * 0.1}
+                  color={i % 2 === 0 ? 'purple' : 'cyan'}
+                />
+              ))}
+            </div>
           </SectionReveal>
         </div>
       </section>
