@@ -17,10 +17,12 @@ import CloudRoom from "./pages/CloudRoom";
 import TerminalPage from './pages/TerminalPage'
 import Contact from "./pages/Contact";
 import GridBackground from "./components/GridBackground";
-import PageTransition from "./components/PageTransition";
+import ThemeSwitch from "./components/ThemeSwitch";
+import PagePortal from "./components/PagePortal";
 import StarBackground from "./components/StarBackground";
 import RefreshingBackground from "./components/RefreshingBackground";
-  
+import Mascot from "./components/Mascot";
+
 function AnimatedRoutes() {
   const location = useLocation();
   return (
@@ -29,49 +31,49 @@ function AnimatedRoutes() {
         <Route
           path="/"
           element={
-            <PageTransition>
+            <PagePortal>
               <Home />
-            </PageTransition>
+            </PagePortal>
           }
         />
         <Route
           path="/about"
           element={
-            <PageTransition>
+            <PagePortal>
               <About />
-            </PageTransition>
+            </PagePortal>
           }
         />
         <Route
           path="/mern-room"
           element={
-            <PageTransition>
+            <PagePortal>
               <MernRoom />
-            </PageTransition>
+            </PagePortal>
           }
         />
         <Route
           path="/terminal"
           element={
-            <PageTransition>
+            <PagePortal>
               <TerminalPage />
-            </PageTransition>
+            </PagePortal>
           }
         />
         <Route
           path="/cloud-room"
           element={
-            <PageTransition>
+            <PagePortal>
               <CloudRoom />
-            </PageTransition>
+            </PagePortal>
           }
         />
         <Route
           path="/contact"
           element={
-            <PageTransition>
+            <PagePortal>
               <Contact />
-            </PageTransition>
+            </PagePortal>
           }
         />
       </Routes>
@@ -96,6 +98,8 @@ export default function App() {
       <GridBackground />
       <Cursor />
       <Navbar />
+      <ThemeSwitch />
+      <Mascot />
       <main>
         <AnimatedRoutes />
       </main>
