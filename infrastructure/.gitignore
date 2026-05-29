@@ -1,0 +1,23 @@
+# Terraform state files (NEVER commit these!)
+*.tfstate
+*.tfstate.backup
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+
+# Local .terraform directories (provider binaries)
+.terraform/
+**/.terraform/
+
+# Crash logs
+crash.log
+crash.*.log
+
+# Override files
+override.tf
+override.tf.json
+terraform.rc
+
+# CLI configuration files
+.terraformrc
+terraform.rc
