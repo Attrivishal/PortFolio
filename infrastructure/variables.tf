@@ -1,7 +1,7 @@
 variable "aws_region" {
   description = "AWS region to deploy resources in"
   type        = string
-  default     = "ap-south-1" # Defaults to Mumbai (highly common and cost-effective)
+  default     = "us-east-1" # Defaults to US East (N. Virginia)
 }
 
 variable "app_name" {

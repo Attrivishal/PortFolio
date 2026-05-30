@@ -14,7 +14,7 @@ resource "aws_security_group" "alb" {
   }
 
   # Inbound HTTPS
-  
+
   ingress {
     description = "Allow HTTPS from anywhere"
     from_port   = 443
