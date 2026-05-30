@@ -1,23 +1,71 @@
 name: Backend Deploy
 
 on:
+  pull_request:
+    paths:
+      - 'server/**'
+      - '.github/workflows/backend-deploy.yml'
   push:
     branches:
       - main
     paths:
       - 'server/**'
+      - '.github/workflows/backend-deploy.yml'
+
+permissions:
+  contents: read
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-  deploy:
-    name: Build & Deploy Backend
+  build-test-scan:
+    name: Build, Test & Scan Backend
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+
+      - name: Install Dependencies
+        working-directory: server
+        run: npm ci
+
+      - name: Run API Tests
+        working-directory: server
+        run: npm test
+
+      - name: Build Docker Image
+        run: docker build -t portfolio-backend:${{ github.sha }} ./server
+
+      - name: Scan Docker Image
+        uses: aquasecurity/trivy-action@0.24.0
+        with:
+          image-ref: portfolio-backend:${{ github.sha }}
+          severity: CRITICAL,HIGH
+          ignore-unfixed: true
+          exit-code: '1'
+
+  deploy:
+    name: Deploy Backend
+    runs-on: ubuntu-latest
+    needs: build-test-scan
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
 
       - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v2
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
@@ -25,7 +73,7 @@ jobs:
 
       - name: Login to Amazon ECR
         id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+        uses: aws-actions/amazon-ecr-login@v2
 
       - name: Build, Tag, and Push Docker Image to ECR
         env:
@@ -34,38 +82,52 @@ jobs:
           IMAGE_TAG: ${{ github.sha }}
         run: |
           cd server
-          # Build ECR-compatible backend image
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -t $ECR_REGISTRY/$ECR_REPOSITORY:latest .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:latest
 
       - name: SSH and Redeploy Container on EC2
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.0.3
         with:
           host: ${{ secrets.EC2_PUBLIC_IP }}
           username: ubuntu
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            # Authenticate Docker daemon on EC2 against AWS ECR
+            set -e
+
             aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | docker login --username AWS --password-stdin ${{ steps.login-ecr.outputs.registry }}
 
-            # Pull latest backend image
             docker pull ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-            # Stop and remove existing container if running
             docker stop portfolio-backend || true
             docker rm portfolio-backend || true
 
-            # Run new backend container mapping 5001 inside the VPC network, passing MongoDB string securely
             docker run -d \
               --name portfolio-backend \
               -p 5001:5001 \
+              --health-cmd "node -e \"fetch('http://127.0.0.1:5001/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))\"" \
+              --health-interval 30s \
+              --health-timeout 5s \
+              --health-retries 3 \
+              --health-start-period 20s \
               -e PORT=5001 \
+              -e NODE_ENV=production \
               -e MONGODB_URI="${{ secrets.MONGODB_URI }}" \
               -e FRONTEND_URL="${{ secrets.FRONTEND_URL }}" \
+              -e ADMIN_API_KEY="${{ secrets.ADMIN_API_KEY }}" \
+              -e EMAIL_USER="${{ secrets.EMAIL_USER }}" \
+              -e EMAIL_PASS="${{ secrets.EMAIL_PASS }}" \
+              -e EMAIL_TO="${{ secrets.EMAIL_TO }}" \
               --restart always \
               ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
 
-            # Prune obsolete system containers/dangling layers
+            for i in $(seq 1 10); do
+              if curl -fsS http://127.0.0.1:5001/api/health; then
+                break
+              fi
+              sleep 5
+            done
+
+            curl -fsS http://127.0.0.1:5001/api/health
             docker image prune -f

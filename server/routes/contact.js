@@ -1,14 +1,63 @@
 const express = require('express')
+const rateLimit = require('express-rate-limit')
 const router = express.Router()
 const Message = require('../models/Message')
+const nodemailer = require('nodemailer')
+
+const contactLimiter = rateLimit({
+  windowMs: 60 * 60 * 1000,
+  max: Number(process.env.CONTACT_RATE_LIMIT || 5),
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: { success: false, message: 'Too many contact requests, please try again later.' },
+})
+
+function requireAdmin(req, res, next) {
+  const configuredKey = process.env.ADMIN_API_KEY
+  const providedKey = req.get('x-admin-api-key')
+
+  if (!configuredKey) {
+    return res.status(503).json({ success: false, message: 'Admin API is not configured.' })
+  }
+
+  if (providedKey !== configuredKey) {
+    return res.status(401).json({ success: false, message: 'Unauthorized.' })
+  }
+
+  return next()
+}
+
+async function sendNotification(message) {
+  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || !process.env.EMAIL_TO) return
+
+  const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: process.env.EMAIL_USER,
+      pass: process.env.EMAIL_PASS,
+    },
+  })
+
+  await transporter.sendMail({
+    from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
+    to: process.env.EMAIL_TO,
+    subject: `New portfolio message: ${message.subject}`,
+    text: [
+      `Name: ${message.name}`,
+      `Email: ${message.email}`,
+      `Role: ${message.role}`,
+      '',
+      message.message,
+    ].join('\n'),
+  })
+}
 
 // ─── POST /api/contact ─────────────────────────────────
 // Save a new message from the contact form
-router.post('/', async (req, res) => {
+router.post('/', contactLimiter, async (req, res) => {
   try {
     const { name, email, subject, message, role } = req.body
 
-    // Basic validation
     if (!name || !email || !message) {
       return res.status(400).json({
         success: false,
@@ -25,7 +74,9 @@ router.post('/', async (req, res) => {
       ipAddress: req.ip,
     })
 
-    console.log(`📩 New message from ${name} (${role || 'other'}) — ${email}`)
+    sendNotification(newMessage).catch(error => {
+      console.error('Email notification failed:', error.message)
+    })
 
     res.status(201).json({
       success: true,
@@ -48,10 +99,11 @@ router.post('/', async (req, res) => {
 })
 
 // ─── GET /api/messages ─────────────────────────────────
-// Get all messages (add auth middleware in production)
-router.get('/messages', async (req, res) => {
+router.get('/messages', requireAdmin, async (req, res) => {
   try {
     const { role, unread, limit = 50, page = 1 } = req.query
+    const safeLimit = Math.min(Number(limit) || 50, 100)
+    const safePage = Math.max(Number(page) || 1, 1)
     const filter = {}
     if (role) filter.role = role
     if (unread === 'true') filter.isRead = false
@@ -59,8 +111,8 @@ router.get('/messages', async (req, res) => {
     const messages = await Message
       .find(filter)
       .sort({ createdAt: -1 })
-      .limit(Number(limit))
-      .skip((Number(page) - 1) * Number(limit))
+      .limit(safeLimit)
+      .skip((safePage - 1) * safeLimit)
       .lean()
 
     const total = await Message.countDocuments(filter)
@@ -68,7 +120,7 @@ router.get('/messages', async (req, res) => {
     res.json({
       success: true,
       data: messages,
-      pagination: { page: Number(page), limit: Number(limit), total, pages: Math.ceil(total / limit) },
+      pagination: { page: safePage, limit: safeLimit, total, pages: Math.ceil(total / safeLimit) },
     })
   } catch (error) {
     res.status(500).json({ success: false, message: 'Server error.' })
@@ -76,7 +128,7 @@ router.get('/messages', async (req, res) => {
 })
 
 // ─── PATCH /api/contact/:id/read ──────────────────────
-router.patch('/:id/read', async (req, res) => {
+router.patch('/:id/read', requireAdmin, async (req, res) => {
   try {
     const msg = await Message.findByIdAndUpdate(
       req.params.id,

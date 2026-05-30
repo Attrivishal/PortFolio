@@ -21,5 +21,11 @@ yarn-error.log*
 # optional
 coverage/
 
-Dockerfile
-docker-compose.yml
+# Terraform local state
+*.tfstate
+*.tfstate.backup
+*.tfstate.*
+*.tfvars
+*.tfvars.json
+.terraform/
+.terraform.lock.hcl

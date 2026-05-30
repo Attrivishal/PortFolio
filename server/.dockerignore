@@ -1,0 +1,9 @@
+node_modules
+npm-debug.log*
+.env
+.env.*
+coverage
+tests
+Dockerfile
+.dockerignore
+portfolio.code-workspace
