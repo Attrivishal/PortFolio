@@ -8,8 +8,8 @@
 # ==============================================================================
 
 # Configurations
-SNS_TOPIC_ARN=""  # ADD YOUR AWS SNS TOPIC ARN HERE (e.g. "arn:aws:sns:ap-south-1:123456789012:portfolio-alerts")
-AWS_REGION="ap-south-1"
+SNS_TOPIC_ARN=""  # ADD YOUR AWS SNS TOPIC ARN HERE (e.g. "arn:aws:sns:us-east-1:123456789012:portfolio-alerts")
+AWS_REGION="us-east-1"
 
 # Thresholds (%)
 CPU_THRESHOLD=80
