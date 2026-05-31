@@ -1,4 +1,5 @@
 # Application Load Balancer in Public Subnets
+
 resource "aws_lb" "backend_alb" {
   name               = "${var.app_name}-alb"
   internal           = false
