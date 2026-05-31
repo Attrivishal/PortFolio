@@ -1,4 +1,5 @@
 # Data source to dynamically fetch the latest stable Ubuntu 22.04 LTS AMI
+
 data "aws_ami" "ubuntu" {
   most_recent = true
   owners      = ["099720109477"] # Canonical (Ubuntu)
@@ -16,12 +17,14 @@ data "aws_ami" "ubuntu" {
 
 # Key Pair for SSH access (looks up local SSH key to make provisioning automatic)
 # Note: You can create a key pair locally using `ssh-keygen -t rsa -b 4096 -f ~/.ssh/portfolio-deploy-key`
+
 resource "aws_key_pair" "deployer" {
   key_name   = var.key_name
   public_key = fileexists("~/.ssh/portfolio-deploy-key.pub") ? file("~/.ssh/portfolio-deploy-key.pub") : (fileexists("~/.ssh/id_rsa.pub") ? file("~/.ssh/id_rsa.pub") : file("~/.ssh/id_ed25519.pub"))
 }
 
 # EC2 Instance for the backend MERN container
+
 resource "aws_instance" "backend" {
   ami                  = data.aws_ami.ubuntu.id
   instance_type        = var.instance_type
@@ -37,6 +40,7 @@ resource "aws_instance" "backend" {
   user_data = <<-EOF
               #!/bin/bash
               # Update packages and system files
+              
               apt-get update -y
               apt-get upgrade -y
 
