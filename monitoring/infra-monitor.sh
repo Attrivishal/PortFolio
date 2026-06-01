@@ -7,6 +7,7 @@
 # If the backend is down, it executes an auto-healing reboot and alerts the admin.
 # ==============================================================================
 
+
 # Configurations
 SNS_TOPIC_ARN=""  # ADD YOUR AWS SNS TOPIC ARN HERE (e.g. "arn:aws:sns:us-east-1:123456789012:portfolio-alerts")
 AWS_REGION="us-east-1"
